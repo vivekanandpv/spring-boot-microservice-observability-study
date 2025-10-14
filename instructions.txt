@@ -1,0 +1,4 @@
+https://opentelemetry.io/docs/zero-code/java/agent/getting-started/
+
+In the VM Options of IntelliJ
+-javaagent:opentelemetry-javaagent.jar -Dotel.service.name=sample-service -Dotel.exporter.otlp.endpoint=http://localhost:4318 -Dotel.logs.exporter=otlp -Dotel.traces.exporter=none -Dotel.metrics.exporter=none -Dotel.logs.exporter=otlp
