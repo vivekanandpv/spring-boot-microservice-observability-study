@@ -1,9 +1,45 @@
 https://opentelemetry.io/docs/zero-code/java/agent/getting-started/
 
 In the VM Options of IntelliJ
--javaagent:opentelemetry-javaagent.jar -Dotel.service.name=sample-service -Dotel.exporter.otlp.endpoint=http://localhost:4318 -Dotel.logs.exporter=otlp -Dotel.traces.exporter=none -Dotel.metrics.exporter=none -Dotel.logs.exporter=otlp
+-javaagent:opentelemetry-javaagent.jar -Dotel.service.name=sample-service -Dotel.exporter.otlp.endpoint=http://localhost:4317 -Dotel.logs.exporter=otlp -Dotel.traces.exporter=none -Dotel.metrics.exporter=otlp -Dotel.exporter.otlp.protocol=grpc
 
 Open grafana: localhost:3000
     Data Sources > Add Loki > url: http://loki:3100 > Test and Save
-    Explore > Logs
+                 > Add Prometheus > url: http://prometheus:9090 > Test and Save
+    Explore > Logs & Metrics
     Search {service_name="sample-service"}
+    
+GET http://localhost:8080/api/v1/sample
+GET http://localhost:8080/api/v1/sample/error-demo
+    
+
+Changes:
+
+In pom.xml:
+    1. spring-boot-starter-actuator
+    2. io.micrometer > micrometer-registry-prometheus
+
+In application.yaml:
+    1. management block added
+    
+Added new config: prometheus.yaml
+
+In docker-compose:
+    1. changed the network to observability-net
+    2. otel-collector 
+        a. port for prometheus 8889 added
+        b. depends on prometheus
+    3. prometheus block is added
+    
+In otel-collector-config:
+    1. prometheus > endpoint added to exporters
+    2. metrics block added to service > pipelines
+    
+In run configuration, modified VM options:
+    -javaagent:opentelemetry-javaagent.jar 
+    -Dotel.service.name=sample-service 
+    -Dotel.exporter.otlp.endpoint=http://localhost:4317 
+    -Dotel.logs.exporter=otlp 
+    -Dotel.traces.exporter=none 
+    -Dotel.metrics.exporter=otlp 
+    -Dotel.exporter.otlp.protocol=grpc
