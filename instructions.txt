@@ -1,9 +1,24 @@
 https://opentelemetry.io/docs/zero-code/java/agent/getting-started/
 
 In the VM Options of IntelliJ
--javaagent:opentelemetry-javaagent.jar -Dotel.service.name=sample-service -Dotel.exporter.otlp.endpoint=http://localhost:4318 -Dotel.logs.exporter=otlp -Dotel.traces.exporter=none -Dotel.metrics.exporter=none -Dotel.logs.exporter=otlp
+    -javaagent:opentelemetry-javaagent.jar
+    -Dotel.service.name=sample-service
+    -Dotel.exporter.otlp.endpoint=http://localhost:4317
+    -Dotel.logs.exporter=otlp
+    -Dotel.traces.exporter=none
+    -Dotel.metrics.exporter=otlp
+    -Dotel.exporter.otlp.protocol=grpc
 
 Open grafana: localhost:3000
     Data Sources > Add Loki > url: http://loki:3100 > Test and Save
     Explore > Logs
     Search {service_name="sample-service"}
+    
+GET http://localhost:8080/api/v1/sample
+GET http://localhost:8080/api/v1/sample/error-demo
+
+Changes:
+
+1. Placed opentelemetry-javaagent.jar in the project root
+2. created otel-collector-config
+3. created docker-compose.yaml
